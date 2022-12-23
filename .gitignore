@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+/ConsoleApplication2/x64/Debug
+/.vs/sea-battle/v17
+/.vs/sea-battle/FileContentIndex
+/.vs
+/sea-battle/x64/Debug
+/x64/Debug
