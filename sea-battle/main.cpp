@@ -15,7 +15,7 @@ int Ships[11] = { 0 };
 
 
 void gotox(int x, int y) {//переставления курсора в заданные кординаты в консольном окне
-    COORD p = { x, y };
+    COORD p = {x, y};
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), p);
 }
 
@@ -107,18 +107,18 @@ bool set_ship(int map[N][N], int x, int y, int dir, int size_ship) {
         }
 
         switch (dir) {
-        case 0:
-            x++;
-        break;
-        case 1:
-            y++;
-        break;
-        case 2:
-            x--;
-        break;
-        case 3:
-            y--;
-        break;
+            case 0:
+                x++;
+            break;
+            case 1:
+                y++;
+            break;
+            case 2:
+                x--;
+            break;
+            case 3:
+                y--;
+            break;
         }
     }
     if (setting_is_possible == 1) {
@@ -206,26 +206,6 @@ void set_rand_ships(int map[N][N], int size_ship, int num_ships) {
                 break;
             }
             switch (dir) {
-            case 0:
-                x++;
-                break;
-            case 1:
-                y++;
-                break;
-            case 2:
-                x--;
-                break;
-            case 3:
-                y--;
-                break;
-            }
-        }
-        if (setting_is_possible == 1) {
-            x = temp_x;
-            y = temp_y;
-            for (int i = 0; i < size_ship; i++) {//запись коробля в массив
-                map[x][y] = Ships_id;
-                switch (dir) {
                 case 0:
                     x++;
                     break;
@@ -238,6 +218,26 @@ void set_rand_ships(int map[N][N], int size_ship, int num_ships) {
                 case 3:
                     y--;
                     break;
+            }
+        }
+        if (setting_is_possible == 1) {
+            x = temp_x;
+            y = temp_y;
+            for (int i = 0; i < size_ship; i++) {//запись коробля в массив
+                map[x][y] = Ships_id;
+                switch (dir) {
+                    case 0:
+                        x++;
+                        break;
+                    case 1:
+                        y++;
+                        break;
+                    case 2:
+                        x--;
+                        break;
+                    case 3:
+                        y--;
+                        break;
                 }
             }
             Ships[Ships_id] = size_ship;
@@ -251,14 +251,14 @@ void map_show(int map[N][N], int mask[N][N]) {
     for (int i = 0; i < N; i++) cout << i << "";
     cout << endl;
     for (int i = 0; i < N; i++) {//прорисовка
-        cout << i << " ";
+        cout << i << "";
         for (int j = 0; j < N; j++) {
-            if (mask[j][i] == 1) {
+            //if (mask[j][i] == 1) {
                 if (map[j][i] == 0) cout << "*";
                 else if (map[j][i] == -1) cout << "*";
                 else cout << "X";
-            }
-            else cout << " ";
+            //}
+            //else cout << " ";
         }
         cout << endl;
     }
@@ -268,9 +268,9 @@ int main() {
 
     while (true)
     {
-        int map[N][N] = { 0 };
+        int map[N][N] = {0};
 
-        int mask[N][N] = { 0 };
+        int mask[N][N] = {0};
 
         //set_rand_ships(map, 4, 1);
         //set_rand_ships(map, 3, 2);
@@ -283,11 +283,12 @@ int main() {
         int ch;
         int temp_x = x, temp_y = y;
         int temp_dir = dir;
+        int amount_ship = 0;//количество кораблей на поле
         while (true) // ручная постановка корабля
         {
             map_show(map, mask);
             ship_show(x, y, dir, size_ship);
-            
+           
             ch = _getch();
             // изменить координаты или направление
             switch (ch) {
@@ -306,13 +307,58 @@ int main() {
             case 114:// r поворот
                 dir = !dir;
                 break;
-            case 13:// entr установка коробля
-
+            case 13:// enter установка коробля
                 if (set_ship(map, x, y, dir, size_ship)) {
                     x = 0;
                     y = 0;
                     dir = 0;
-                    size_ship -= 1;
+                    switch (size_ship) {
+                    case 4:
+                        if(amount_ship==0)
+                            amount_ship = 1;
+                        if (amount_ship > 0)
+                            amount_ship--;
+                        if (amount_ship == 0)
+                            size_ship--;
+                        break;
+                    case 3:
+                        if (amount_ship == 0)
+                            amount_ship = 2;
+                        if (amount_ship > 0) 
+                            amount_ship--;
+                        if (amount_ship == 0)
+                            size_ship--;
+                        break;
+                    case 2:
+                        if (amount_ship == 0)
+                            amount_ship = 3;
+                        if (amount_ship > 0)
+                            amount_ship--;
+                        if (amount_ship == 0)
+                            size_ship--;
+                            
+                        break;
+                        /*
+                        amount_ship = 3;
+                        if (amount_ship <= 0) 
+                            size_ship -= 1;
+                        amount_ship--;
+                        */
+                        break;
+                    case 1:
+                        if (amount_ship == 0)
+                            amount_ship =4;
+                        if (amount_ship > 0)
+                            amount_ship--;
+                        if (amount_ship == 0)
+                            size_ship--;
+                        /*
+                        amount_ship = 4;
+                        if (amount_ship <= 0) size_ship -= 1;
+                        amount_ship--;
+                        */
+                        break;
+                    }
                 }
                 break;
             }
