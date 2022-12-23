@@ -122,6 +122,7 @@ void map_show(int map[N][N], int mask[N][N]) {
 }
 int main()
 {
+    //тест
     setlocale(LC_ALL, "Russian");
 
     while (true) 
