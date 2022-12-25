@@ -1,6 +1,5 @@
 ﻿#include <iostream>
 #include <windows.h>
-#include <math.h>
 #include <ctime>
 #include <conio.h>
 #include <string>
@@ -10,8 +9,12 @@ using namespace std;
 
 const int N = 10;
 
+int Ships_id = 1;
+int Ships[11] = { 0 };
+
+
 void gotox(int x, int y) {//переставления курсора в заданные кординаты в консольном окне
-    COORD p = {x, y};
+    COORD p = { x, y };
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), p);
 }
 
@@ -19,27 +22,27 @@ void ship_show(int x, int y, int dir, int size_ship) {
 
     for (int i = 0; i < size_ship; i++) {//запись коробля в массив
 
-        gotox(x + 1, y + 1);
+        gotox(x + 1, y + 2);
         cout << "#";
 
         switch (dir) {
         case 0:
             x++;
-        break;
+            break;
         case 1:
             y++;
-        break;
+            break;
         case 2:
             x--;
-        break;
+            break;
         case 3:
             y--;
-        break;
+            break;
         }
     }
 }
 
-bool set_ship(int map[N][N], int x, int y, int dir, int size_ship, int Ships[11], int Ships_id) {         //Ships_id * 3
+bool set_ship(int map[N][N], int x, int y, int dir, int size_ship) {
     int temp_x = x;
     int temp_y = y;
     bool setting_is_possible = 1;// пройдина ли проверка
@@ -103,17 +106,17 @@ bool set_ship(int map[N][N], int x, int y, int dir, int size_ship, int Ships[11]
         }
 
         switch (dir) {
-            case 0:
-                x++;
+        case 0:
+            x++;
             break;
-            case 1:
-                y++;
+        case 1:
+            y++;
             break;
-            case 2:
-                x--;
+        case 2:
+            x--;
             break;
-            case 3:
-                y--;
+        case 3:
+            y--;
             break;
         }
     }
@@ -123,23 +126,24 @@ bool set_ship(int map[N][N], int x, int y, int dir, int size_ship, int Ships[11]
         for (int i = 0; i < size_ship; i++) {//запись коробля в массив
             map[x][y] = Ships_id;
             switch (dir) {
-                case 0:
-                    x++;
+            case 0:
+                x++;
                 break;
-                case 1:
-                    y++;
+            case 1:
+                y++;
                 break;
-                case 2:
-                    x--;
+            case 2:
+                x--;
                 break;
-                case 3:
-                    y--;
+            case 3:
+                y--;
                 break;
             }
         }
         Ships[Ships_id] = size_ship;
         Ships_id += 1;
     }
+
     return setting_is_possible;
 }
 
@@ -170,7 +174,7 @@ bool ship_in_map(int x, int y, int dir, int size_ship) {//находится л�
     return in_map;
 }
 
-void set_rand_ships(int map[N][N], int size_ship, int num_ships, int Ships[11], int Ships_id) {     //Ships_id * 2  
+void set_rand_ships(int map[N][N], int size_ship, int num_ships) {
     int x, y;
     int dir = 0;//направление
     int cout_ship = 0;
@@ -201,6 +205,26 @@ void set_rand_ships(int map[N][N], int size_ship, int num_ships, int Ships[11], 
                 break;
             }
             switch (dir) {
+            case 0:
+                x++;
+                break;
+            case 1:
+                y++;
+                break;
+            case 2:
+                x--;
+                break;
+            case 3:
+                y--;
+                break;
+            }
+        }
+        if (setting_is_possible == 1) {
+            x = temp_x;
+            y = temp_y;
+            for (int i = 0; i < size_ship; i++) {//запись коробля в массив
+                map[x][y] = Ships_id;
+                switch (dir) {
                 case 0:
                     x++;
                     break;
@@ -213,26 +237,6 @@ void set_rand_ships(int map[N][N], int size_ship, int num_ships, int Ships[11], 
                 case 3:
                     y--;
                     break;
-            }
-        }
-        if (setting_is_possible == 1) {
-            x = temp_x;
-            y = temp_y;
-            for (int i = 0; i < size_ship; i++) {//запись коробля в массив
-                map[x][y] = Ships_id;
-                switch (dir) {
-                    case 0:
-                        x++;
-                        break;
-                    case 1:
-                        y++;
-                        break;
-                    case 2:
-                        x--;
-                        break;
-                    case 3:
-                        y--;
-                        break;
                 }
             }
             Ships[Ships_id] = size_ship;
@@ -241,7 +245,8 @@ void set_rand_ships(int map[N][N], int size_ship, int num_ships, int Ships[11], 
         }
     }
 }
-void map_show(int map[N][N], int mask[N][N]) {
+void map_show(int map[N][N], int mask[N][N], string gemer) {
+    cout << gemer << endl;
     cout << " ";
     for (int i = 0; i < N; i++) cout << i << "";
     cout << endl;
@@ -249,9 +254,9 @@ void map_show(int map[N][N], int mask[N][N]) {
         cout << i << "";
         for (int j = 0; j < N; j++) {
             //if (mask[j][i] == 1) {
-                if (map[j][i] == 0) cout << "-";
-                else if (map[j][i] == -1) cout << "o";
-                else cout << "X";
+            if (map[j][i] == 0) cout << "*";
+            else if (map[j][i] == -1) cout << "*";
+            else cout << "X";
             //}
             //else cout << " ";
         }
@@ -259,42 +264,29 @@ void map_show(int map[N][N], int mask[N][N]) {
     }
     cout << endl;
 }
-int main() {                            //Ships[11] * 1
+int main() {
     setlocale(LC_ALL, "Russian");
 
-    int Ships[11] = {0};// количество кораблей на поле игрока
-    int Ships2[11] = { 0 };// количество кораблей на поле игрока
-    int Ships_id = 1;
-    int Ships_id2 = 1;
     while (true)
     {
-        int map[N][N] = {0};// игрок 
-        int map2[N][N] = {0};// бот
-        int mask[N][N] = {0}; // туман войны
-        // заполнение поля игрока
-        set_rand_ships(map, 4, 1, Ships, Ships_id);
-        set_rand_ships(map, 3, 2, Ships, Ships_id);
-        set_rand_ships(map, 2, 3, Ships, Ships_id);
-        set_rand_ships(map, 1, 4, Ships, Ships_id);
-
-        set_rand_ships(map2, 4, 1, Ships2, Ships_id2);
-        set_rand_ships(map2, 3, 2, Ships2, Ships_id2);
-        set_rand_ships(map2, 2, 3, Ships2, Ships_id2);
-        set_rand_ships(map2, 1, 4, Ships2, Ships_id2);
-
+        int map[N][N] = { 0 };
+        int map2[N][N] = { 0 };
+        int mask[N][N] = { 0 };
         int x = 0, y = 0;
         int dir = 0;
         int size_ship = 4;
         int ch;
         int amount_ship = 0;//количество кораблей на поле
-        /*
+        string gemer = "Поле Игрока";
+        string gemer2 = "Поле Бота";
+
         while (size_ship != 0) // ручная постановка корабля
         {
-            int temp_x = x, temp_y = y;
-            int temp_dir = dir;
-            map_show(map, mask);
+        int temp_x = x, temp_y = y;
+        int temp_dir = dir;
+            map_show(map, mask, gemer);
             ship_show(x, y, dir, size_ship);
-           
+
             ch = _getch();
             // изменить координаты или направление
             switch (ch) {
@@ -314,13 +306,13 @@ int main() {                            //Ships[11] * 1
                 dir = !dir;
                 break;
             case 13:// enter установка коробля
-                if (set_ship(map, x, y, dir, size_ship, Ships, Ships_id)) {
+                if (set_ship(map, x, y, dir, size_ship)) {
                     x = 0;
                     y = 0;
                     dir = 0;
                     switch (size_ship) {
                     case 4:
-                        if(amount_ship==0)
+                        if (amount_ship == 0)
                             amount_ship = 1;
                         if (amount_ship > 0)
                             amount_ship--;
@@ -330,7 +322,7 @@ int main() {                            //Ships[11] * 1
                     case 3:
                         if (amount_ship == 0)
                             amount_ship = 2;
-                        if (amount_ship > 0) 
+                        if (amount_ship > 0)
                             amount_ship--;
                         if (amount_ship == 0)
                             size_ship--;
@@ -342,11 +334,11 @@ int main() {                            //Ships[11] * 1
                             amount_ship--;
                         if (amount_ship == 0)
                             size_ship--;
-                            
+
                         break;
                     case 1:
                         if (amount_ship == 0)
-                            amount_ship =4;
+                            amount_ship = 4;
                         if (amount_ship > 0)
                             amount_ship--;
                         if (amount_ship == 0)
@@ -364,12 +356,14 @@ int main() {                            //Ships[11] * 1
             _getch();
             system("cls");
         }
-        */
+        set_rand_ships(map2, 4, 1);
+        set_rand_ships(map2, 3, 2);
+        set_rand_ships(map2, 2, 3);
+        set_rand_ships(map2, 1, 4);
 
         while (true) {
-            map_show(map, mask);
-
-            map_show(map2, mask);
+            map_show(map, mask, gemer);
+            map_show(map2, mask, gemer2);
 
             cout << endl << "Введите кординаты цели" << endl;
 
