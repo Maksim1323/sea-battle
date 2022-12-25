@@ -303,7 +303,7 @@ int main() {
                 y--;
                 break;
             case 114:// r поворот
-                dir = !dir;
+                dir != dir;
                 break;
             case 13:// enter установка коробля
                 if (set_ship(map, x, y, dir, size_ship)) {
