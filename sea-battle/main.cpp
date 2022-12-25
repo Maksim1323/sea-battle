@@ -10,10 +10,6 @@ using namespace std;
 
 const int N = 10;
 
-int Ships_id = 1;
-int Ships[11] = { 0 };
-
-
 void gotox(int x, int y) {//переставления курсора в заданные кординаты в консольном окне
     COORD p = {x, y};
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), p);
@@ -43,7 +39,7 @@ void ship_show(int x, int y, int dir, int size_ship) {
     }
 }
 
-bool set_ship(int map[N][N], int x, int y, int dir, int size_ship) {
+bool set_ship(int map[N][N], int x, int y, int dir, int size_ship, int Ships[11], int Ships_id) {         //Ships_id * 3
     int temp_x = x;
     int temp_y = y;
     bool setting_is_possible = 1;// пройдина ли проверка
@@ -144,7 +140,6 @@ bool set_ship(int map[N][N], int x, int y, int dir, int size_ship) {
         Ships[Ships_id] = size_ship;
         Ships_id += 1;
     }
-
     return setting_is_possible;
 }
 
@@ -175,7 +170,7 @@ bool ship_in_map(int x, int y, int dir, int size_ship) {//находится л�
     return in_map;
 }
 
-void set_rand_ships(int map[N][N], int size_ship, int num_ships) {
+void set_rand_ships(int map[N][N], int size_ship, int num_ships, int Ships[11], int Ships_id) {     //Ships_id * 2  
     int x, y;
     int dir = 0;//направление
     int cout_ship = 0;
@@ -254,38 +249,49 @@ void map_show(int map[N][N], int mask[N][N]) {
         cout << i << "";
         for (int j = 0; j < N; j++) {
             //if (mask[j][i] == 1) {
-                if (map[j][i] == 0) cout << "*";
-                else if (map[j][i] == -1) cout << "*";
+                if (map[j][i] == 0) cout << "-";
+                else if (map[j][i] == -1) cout << "o";
                 else cout << "X";
             //}
             //else cout << " ";
         }
         cout << endl;
     }
+    cout << endl;
 }
-int main() {
+int main() {                            //Ships[11] * 1
     setlocale(LC_ALL, "Russian");
 
+    int Ships[11] = {0};// количество кораблей на поле игрока
+    int Ships2[11] = { 0 };// количество кораблей на поле игрока
+    int Ships_id = 1;
+    int Ships_id2 = 1;
     while (true)
     {
-        int map[N][N] = {0};
+        int map[N][N] = {0};// игрок 
+        int map2[N][N] = {0};// бот
+        int mask[N][N] = {0}; // туман войны
+        // заполнение поля игрока
+        set_rand_ships(map, 4, 1, Ships, Ships_id);
+        set_rand_ships(map, 3, 2, Ships, Ships_id);
+        set_rand_ships(map, 2, 3, Ships, Ships_id);
+        set_rand_ships(map, 1, 4, Ships, Ships_id);
 
-        int mask[N][N] = {0};
-
-        //set_rand_ships(map, 4, 1);
-        //set_rand_ships(map, 3, 2);
-        //set_rand_ships(map, 2, 3);
-        //set_rand_ships(map, 1, 4);
+        set_rand_ships(map2, 4, 1, Ships2, Ships_id2);
+        set_rand_ships(map2, 3, 2, Ships2, Ships_id2);
+        set_rand_ships(map2, 2, 3, Ships2, Ships_id2);
+        set_rand_ships(map2, 1, 4, Ships2, Ships_id2);
 
         int x = 0, y = 0;
         int dir = 0;
         int size_ship = 4;
         int ch;
-        int temp_x = x, temp_y = y;
-        int temp_dir = dir;
         int amount_ship = 0;//количество кораблей на поле
-        while (true) // ручная постановка корабля
+        /*
+        while (size_ship != 0) // ручная постановка корабля
         {
+            int temp_x = x, temp_y = y;
+            int temp_dir = dir;
             map_show(map, mask);
             ship_show(x, y, dir, size_ship);
            
@@ -308,7 +314,7 @@ int main() {
                 dir = !dir;
                 break;
             case 13:// enter установка коробля
-                if (set_ship(map, x, y, dir, size_ship)) {
+                if (set_ship(map, x, y, dir, size_ship, Ships, Ships_id)) {
                     x = 0;
                     y = 0;
                     dir = 0;
@@ -338,13 +344,6 @@ int main() {
                             size_ship--;
                             
                         break;
-                        /*
-                        amount_ship = 3;
-                        if (amount_ship <= 0) 
-                            size_ship -= 1;
-                        amount_ship--;
-                        */
-                        break;
                     case 1:
                         if (amount_ship == 0)
                             amount_ship =4;
@@ -352,11 +351,6 @@ int main() {
                             amount_ship--;
                         if (amount_ship == 0)
                             size_ship--;
-                        /*
-                        amount_ship = 4;
-                        if (amount_ship <= 0) size_ship -= 1;
-                        amount_ship--;
-                        */
                         break;
                     }
                 }
@@ -370,9 +364,12 @@ int main() {
             _getch();
             system("cls");
         }
+        */
 
         while (true) {
             map_show(map, mask);
+
+            map_show(map2, mask);
 
             cout << endl << "Введите кординаты цели" << endl;
 
