@@ -25,7 +25,7 @@ void ship_show(int x, int y, int dir, int size_ship) {
     for (int i = 0; i < size_ship; i++) {//запись коробля в массив
 
         gotox(x + 1, y + 2);
-        cout << "#";
+        cout << "# ";
 
         switch (dir) {
         case 0:
@@ -42,6 +42,32 @@ void ship_show(int x, int y, int dir, int size_ship) {
             break;
         }
     }
+}
+bool ship_in_map(int x, int y, int dir, int size_ship) {//находится ли корабль в пределах каоты
+    bool setting_is_possible = 0;
+    bool in_map = 1;// пройдина ли проверка
+    //проверка возможности постановки коробля
+    for (int i = 0; i < size_ship; i++) {
+        if (x < 0 || y < 0 || x >= N || y >= N) {
+            setting_is_possible = 0;
+            break;
+        }
+        switch (dir) {
+        case 0:
+            x++;
+            break;
+        case 1:
+            y++;
+            break;
+        case 2:
+            x--;
+            break;
+        case 3:
+            y--;
+            break;
+        }
+    }
+    return in_map;
 }
 
 bool set_ship(int map[N][N], int x, int y, int dir, int size_ship) {
@@ -149,33 +175,6 @@ bool set_ship(int map[N][N], int x, int y, int dir, int size_ship) {
     return setting_is_possible;
 }
 
-bool ship_in_map(int x, int y, int dir, int size_ship) {//находится ли корабль в пределах каоты
-    bool setting_is_possible = 0;
-    bool in_map = 1;// пройдина ли проверка
-    //проверка возможности постановки коробля
-    for (int i = 0; i < size_ship; i++) {
-        if (x < 0 || y < 0 || x >= N || y >= N) {
-            setting_is_possible = 0;
-            break;
-        }
-        switch (dir) {
-        case 0:
-            x++;
-            break;
-        case 1:
-            y++;
-            break;
-        case 2:
-            x--;
-            break;
-        case 3:
-            y--;
-            break;
-        }
-    }
-    return in_map;
-}
-
 void set_rand_ships(int map[N][N], int size_ship, int ship_id) {
     int x, y;
     int dir = 0;//направление
@@ -272,14 +271,18 @@ int main() {
     {
         int map[N][N] = { 0 };
         int map2[N][N] = { 0 };
+
         int mask[N][N] = { 0 };
+
         int ships[Num_Ships+1] = { 0 };
         int ships2[Num_Ships+1] = { 0 };
+
         int x = 0, y = 0;
         int dir = 0;
         int size_ship = 4;
         int ch;
         int amount_ship = 0;//количество кораблей на поле
+
         string gemer = "Поле Игрока";
         string gemer2 = "Поле Бота";
 
@@ -291,7 +294,7 @@ int main() {
                 if (amount_ship > 0)
                     amount_ship--;
                 if (amount_ship == 0) {
-                    ships2[i] = size_ship;
+                    ships[i] = size_ship;
                     size_ship--;
                 }
                 break;
@@ -300,8 +303,9 @@ int main() {
                     amount_ship = 2;
                 if (amount_ship > 0)
                     amount_ship--;
+                    ships[i] = size_ship;
                 if (amount_ship == 0) {
-                    ships2[i] = size_ship;
+                    ships[i] = size_ship;
                     size_ship--;
                 }
                 break;
@@ -310,8 +314,9 @@ int main() {
                     amount_ship = 3;
                 if (amount_ship > 0)
                     amount_ship--;
+                    ships[i] = size_ship;
                 if (amount_ship == 0) {
-                    ships2[i] = size_ship;
+                    ships[i] = size_ship;
                     size_ship--;
                 }
                 break;
@@ -319,16 +324,19 @@ int main() {
                 if (amount_ship == 0)
                     amount_ship = 4;
                 if (amount_ship > 0)
-                    amount_ship--;
+                     amount_ship--;
+                    ships[i] = size_ship;
                 if (amount_ship == 0) {
-                    ships2[i] = size_ship;
-                    size_ship--;
+                     ships[i] = size_ship;
+                     size_ship--;
                 }
                 break;
             }
         }
+
         amount_ship = 0;
         size_ship = 4;
+
         for (int i = 1; i <= Num_Ships; i++) {
             switch (size_ship) {
             case 4:
@@ -337,7 +345,7 @@ int main() {
                 if (amount_ship > 0)
                     amount_ship--;
                 if (amount_ship == 0) {
-                    ships[i] = size_ship;
+                    ships2[i] = size_ship;
                     size_ship--;
                 }
                 break;
@@ -346,8 +354,9 @@ int main() {
                     amount_ship = 2;
                 if (amount_ship > 0)
                     amount_ship--;
+                    ships2[i] = size_ship;
                 if (amount_ship == 0) {
-                    ships[i] = size_ship;
+                    ships2[i] = size_ship;
                     size_ship--;
                 }
                 break;
@@ -356,8 +365,9 @@ int main() {
                     amount_ship = 3;
                 if (amount_ship > 0)
                     amount_ship--;
+                    ships2[i] = size_ship;
                 if (amount_ship == 0) {
-                    ships[i] = size_ship;
+                    ships2[i] = size_ship;
                     size_ship--;
                 }
                 break;
@@ -366,19 +376,20 @@ int main() {
                     amount_ship = 4;
                 if (amount_ship > 0)
                     amount_ship--;
+                    ships2[i] = size_ship;
                 if (amount_ship == 0) {
-                    ships[i] = size_ship;
+                    ships2[i] = size_ship;
                     size_ship--;
                 }
                 break;
             }
         }
 
-        for(int i = 1; i <= Num_Ships; i++)set_rand_ships(map, ships[i], Ships_id);
+        for(int i = 1; i <= Num_Ships; i++)
+            set_rand_ships(map, ships[i], i);
 
-        //Ships_id = 1;
-
-        for(int i = 1; i <= Num_Ships; i++)set_rand_ships(map2, ships2[i], i);
+        for(int i = 1; i <= Num_Ships; i++)
+            set_rand_ships(map2, ships2[i], i);
 
 
         /*while (size_ship != 0) // ручная постановка корабля
@@ -467,17 +478,17 @@ int main() {
 
             cin >> x >> y;
 
-            if (map[x][y] >= 1)
+            if (map2[x][y] >= 1)
             {
-                Ships[map[x][y]] -= 1;
-                if (Ships[map[x][y]] <= 0) cout << "Убил" << endl;
+                ships2[map2[x][y]] -= 1;
+                if (ships2[map2[x][y]] <= 0) cout << "Убил" << endl;
                 else cout << "Попал" << endl;
             }
             else
             {
                 cout << "Промах" << endl;
             }
-            map[x][y] = -1;
+            map2[x][y] = -1;
             mask[x][y] = 1;
             _getch();
             system("cls");
