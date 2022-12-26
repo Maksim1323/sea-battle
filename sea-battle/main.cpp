@@ -44,26 +44,6 @@ void ship_show(int x, int y, int dir, int size_ship) {
     }
 }
 
-bool shooting(int map2[N][N], int mask[N][N], int x, int y, int ships2[Num_Ships+1]) {
-    bool killed = 0; // killed - попал;
-    if (map2[x][y] >= 1)
-    {
-        ships2[map2[x][y]] -= 1;
-        if (ships2[map2[x][y]] <= 0) cout << "Убил" << endl;
-        else cout << "Попал" << endl;
-        killed = 1;
-    }
-    else
-    {
-        cout << "Промах" << endl;
-    }
-    map2[x][y] = -1;
-    mask[x][y] = 1;
-    _getch();
-    system("cls");
-    return killed;
-}
-
 bool ship_in_map(int x, int y, int dir, int size_ship) {//находится ли корабль в пределах каоты
     bool setting_is_possible = 0;
     bool in_map = 1;// пройдина ли проверка
@@ -285,6 +265,27 @@ void map_show(int map[N][N], int mask[N][N], string gemer) {
     cout << endl;
 }
 
+int shot(int map[N][N], int mask[N][N], int ships[Num_Ships+1], int x, int y) {
+    int result = 0;
+    if (map[x][y] >= 1)
+    {
+        ships[map[x][y]] -= 1;
+        if (ships[map[x][y]] <= 0) {
+           //cout << "Убил" << endl;
+           result = 2;
+        }
+        else {
+            //cout << "Попал" << endl;
+            result = 1;
+        }
+        map[x][y] = -1;
+    }
+
+    mask[x][y] = 1;
+
+    return result;
+}
+
 int main() {
     setlocale(LC_ALL, "Russian");
 
@@ -294,6 +295,7 @@ int main() {
         int map2[N][N] = { 0 };
 
         int mask[N][N] = { 0 };
+        int mask2[N][N] = { 0 };
 
         int ships[Num_Ships+1] = { 0 };
         int ships2[Num_Ships+1] = { 0 };
@@ -490,31 +492,47 @@ int main() {
             system("cls");
         }*/
         
+        /*bool turn = 1; // 1 ходит человек
+        while (true) 
+        {
+            while (true)
+            {
+            break;
+
+            }
+            turn = !turn;
+        }*/
 
         while (true) {
             map_show(map, mask, gemer);
             map_show(map2, mask, gemer2);
 
-            cout << endl << "Введите кординаты цели игрок " << endl;
+            cout << endl << "Введите кординаты цели" << endl;
 
             cin >> x >> y;
 
-            while (shooting(map2, mask, x, y, ships2)) {
-                cout << endl << "Введите кординаты цели игрок " << endl;
-                cin >> x >> y;
-                map_show(map, mask, gemer);
-                map_show(map2, mask, gemer2);
+
+            shot(map2, mask2, ships2, x, y);
+            ships[map[x][y]] -= 1;
+            if (shot(map2, mask2, ships2, x, y) == 2)
+            {
+                cout << "Убил" << endl;
             }
-            while (shooting(map2, mask, x, y, ships2)) {
-                x = rand() % N;
-                y = rand() % N;
-                map_show(map, mask, gemer);
-                map_show(map2, mask, gemer2);
+            else if (shot(map2, mask2, ships2, x, y) == 1)
+            {
+                cout << "Попал" << endl;
             }
+            else
+            {
+                cout << "Промах";
+            }
+            
+            Sleep(1000);
+            system("cls");
 
         }
 
-        _getch(); // пауза
+        Sleep(1000);
         system("cls");//отчистка консольного окошка
     }
 
