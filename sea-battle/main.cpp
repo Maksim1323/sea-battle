@@ -247,8 +247,8 @@ void set_rand_ships(int map[N][N], int size_ship, int ship_id) {
 }
 void map_show(int map[N][N], int mask[N][N], string gemer, bool usemask) {
     cout << gemer << endl;
-    cout << " ";
-    for (int i = 0; i < N; i++) cout << i << "";
+    cout << "  ";
+    for (int i = 0; i < N; i++) cout << i << " ";
     cout << endl;
     for (int i = 0; i < N; i++) {//прорисовка
         cout << i << "";
@@ -257,20 +257,24 @@ void map_show(int map[N][N], int mask[N][N], string gemer, bool usemask) {
             {
                 if (map[j][i] == 0) 
                 {
-                    cout << "-";
+                    cout << " -";
                 }
                 else if (map[j][i] == -1) 
                 {
-                    cout << "o";
+                    cout << " O";
+                }
+                else if (map[j][i] == -2)
+                {
+                    cout << " *";
                 }
                 else 
                 {
-                    cout << "X";
+                    cout << " X";
                 }
             }
             else 
             {
-                cout << " ";
+                cout << "  ";
             }
         }
         cout << endl;
@@ -278,18 +282,21 @@ void map_show(int map[N][N], int mask[N][N], string gemer, bool usemask) {
     cout << endl;
 }
 
-int shot(int map2[N][N], int mask[N][N], int ships[Num_Ships+1], int x, int y) {
+int shot(int map[N][N], int mask[N][N], int ships[Num_Ships+1], int x, int y) {
     int result = 0;
-    if (map2[x][y] >= 1)
+    if (map[x][y] >= 1)
     {
-        ships[map2[x][y]] -= 1;
-        if (ships[map2[x][y]] <= 0) {
+        ships[map[x][y]] -= 1;
+        if (ships[map[x][y]] <= 0) {
            result = 2;
         }
         else {
             result = 1;
         }
-        map2[x][y] = -1;
+        map[x][y] = -1;
+    }
+    else {
+        map[x][y] = -2;
     }
 
     mask[x][y] = 1;
@@ -506,14 +513,12 @@ int main() {
         }*/
         
         bool turn = 1; // 1 ходит человек
-        bool usemask = 0;
 
         while (true){
             do
              { // отвечает за стрельбу пока не будет промах
-                map_show(map, mask, gemer, usemask);
-                usemask = 1;
-                map_show(map2, mask2, gemer2, usemask);
+                map_show(map, mask, gemer, 0);
+                map_show(map2, mask2, gemer2, 1);
                 
 
                 if (turn == 1)
