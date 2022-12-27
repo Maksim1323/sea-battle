@@ -16,7 +16,7 @@ int Ships2[11] = { 0 };
 
 
 void gotox(int x, int y) {//переставления курсора в заданные кординаты в консольном окне
-    COORD p = { x, y };
+    COORD p = {x, y};
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), p);
 }
 
@@ -428,12 +428,8 @@ int main() {
             }
         }
 
-        for(int i = 1; i <= Num_Ships; i++)
+        for(int i = 1; i <= Num_Ships; i++) // корабли человека
             set_rand_ships(map, ships[i], i);
-
-        for(int i = 1; i <= Num_Ships; i++)
-            set_rand_ships(map2, ships2[i], i);
-
 
         /*while (size_ship != 0) // ручная постановка корабля
         {
@@ -511,6 +507,12 @@ int main() {
             _getch();
             system("cls");
         }*/
+
+        for(int i = 1; i <= Num_Ships; i++) // корабли бота
+            set_rand_ships(map2, ships2[i], i);
+
+
+        
         
         bool turn = 1; // 1 ходит человек
 
