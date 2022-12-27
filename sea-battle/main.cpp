@@ -245,7 +245,7 @@ void set_rand_ships(int map[N][N], int size_ship, int ship_id) {
         }
     }
 }
-void map_show(int map[N][N], int mask[N][N], string gemer) {
+void map_show(int map[N][N], int mask[N][N], string gemer, bool usemask) {
     cout << gemer << endl;
     cout << " ";
     for (int i = 0; i < N; i++) cout << i << "";
@@ -253,32 +253,43 @@ void map_show(int map[N][N], int mask[N][N], string gemer) {
     for (int i = 0; i < N; i++) {//прорисовка
         cout << i << "";
         for (int j = 0; j < N; j++) {
-            //if (mask[j][i] == 1) {
-            if (map[j][i] == 0) cout << "-";
-            else if (map[j][i] == -1) cout << "o";
-            else cout << "X";
-            //}
-            //else cout << " ";
+            if (mask[j][i] == 1 || usemask == 0)
+            {
+                if (map[j][i] == 0) 
+                {
+                    cout << "-";
+                }
+                else if (map[j][i] == -1) 
+                {
+                    cout << "o";
+                }
+                else 
+                {
+                    cout << "X";
+                }
+            }
+            else 
+            {
+                cout << " ";
+            }
         }
         cout << endl;
     }
     cout << endl;
 }
 
-int shot(int map[N][N], int mask[N][N], int ships[Num_Ships+1], int x, int y) {
+int shot(int map2[N][N], int mask[N][N], int ships[Num_Ships+1], int x, int y) {
     int result = 0;
-    if (map[x][y] >= 1)
+    if (map2[x][y] >= 1)
     {
-        ships[map[x][y]] -= 1;
-        if (ships[map[x][y]] <= 0) {
-           //cout << "Убил" << endl;
+        ships[map2[x][y]] -= 1;
+        if (ships[map2[x][y]] <= 0) {
            result = 2;
         }
         else {
-            //cout << "Попал" << endl;
             result = 1;
         }
-        map[x][y] = -1;
+        map2[x][y] = -1;
     }
 
     mask[x][y] = 1;
@@ -305,6 +316,8 @@ int main() {
         int size_ship = 4;
         int ch;
         int amount_ship = 0;//количество кораблей на поле
+
+        int resultshot = 0;
 
         string gemer = "Поле Игрока";
         string gemer2 = "Поле Бота";
@@ -492,50 +505,50 @@ int main() {
             system("cls");
         }*/
         
-        /*bool turn = 1; // 1 ходит человек
-        while (true) 
-        {
-            while (true)
-            {
-            break;
+        bool turn = 1; // 1 ходит человек
+        bool usemask = 0;
 
-            }
+        while (true){
+            do
+             { // отвечает за стрельбу пока не будет промах
+                map_show(map, mask, gemer, usemask);
+                usemask = 1;
+                map_show(map2, mask2, gemer2, usemask);
+                
+
+                if (turn == 1)
+                {
+                    cout << endl << "Введите кординаты цели" << endl;
+                    cin >> x >> y;
+                    resultshot = shot(map2, mask2, ships2, x, y);
+                }
+                else
+                {
+                    cout << endl << "Ход компьютера" << endl;
+                    x = rand() % N;
+                    y = rand() % N;
+                    resultshot = shot(map, mask, ships, x, y);
+                    Sleep(1000);
+                }
+                if (resultshot == 2)
+                {
+                    cout << "Убил" << endl;
+                }
+                else if (resultshot == 1)
+                {
+                    cout << "Попал" << endl;
+                }
+                else
+                {
+                    cout << "Промах";
+                }
+                Sleep(1000);
+                system("cls");
+            }while (resultshot != 0);
             turn = !turn;
-        }*/
-
-        while (true) {
-            map_show(map, mask, gemer);
-            map_show(map2, mask, gemer2);
-
-            cout << endl << "Введите кординаты цели" << endl;
-
-            cin >> x >> y;
-
-
-            shot(map2, mask2, ships2, x, y);
-            ships[map[x][y]] -= 1;
-            if (shot(map2, mask2, ships2, x, y) == 2)
-            {
-                cout << "Убил" << endl;
-            }
-            else if (shot(map2, mask2, ships2, x, y) == 1)
-            {
-                cout << "Попал" << endl;
-            }
-            else
-            {
-                cout << "Промах";
-            }
-            
-            Sleep(1000);
-            system("cls");
-
         }
-
-        Sleep(1000);
         system("cls");//отчистка консольного окошка
     }
-
     system("pause");
     return 0;
 }
