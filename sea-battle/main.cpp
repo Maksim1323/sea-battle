@@ -510,9 +510,6 @@ int main() {
 
         for(int i = 1; i <= Num_Ships; i++) // корабли бота
             set_rand_ships(map2, ships2[i], i);
-
-
-        
         
         bool turn = 1; // 1 ходит человек
 
