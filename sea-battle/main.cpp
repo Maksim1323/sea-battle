@@ -43,8 +43,8 @@ void ship_show(int x, int y, int dir, int size_ship) {
         }
     }
 }
-
-bool ship_in_map(int x, int y, int dir, int size_ship) {//находится ли корабль в пределах каоты
+//находится ли корабль в пределах каоты
+bool ship_in_map(int x, int y, int dir, int size_ship) {
     bool setting_is_possible = 0;
     bool in_map = 1;// пройдина ли проверка
     //проверка возможности постановки коробля
@@ -245,6 +245,7 @@ void set_rand_ships(int map[N][N], int size_ship, int ship_id) {
         }
     }
 }
+
 void map_show(int map[N][N], int mask[N][N], string gemer, bool usemask) {
     cout << gemer << endl;
     cout << "  ";
@@ -253,8 +254,7 @@ void map_show(int map[N][N], int mask[N][N], string gemer, bool usemask) {
     for (int i = 0; i < N; i++) {//прорисовка
         cout << i << "";
         for (int j = 0; j < N; j++) {
-            if (mask[j][i] == 1 || usemask == 0)
-            {
+            if (mask[j][i] == 1 || usemask == 0){
                 if (map[j][i] == 0) 
                 {
                     cout << " -";
@@ -272,10 +272,8 @@ void map_show(int map[N][N], int mask[N][N], string gemer, bool usemask) {
                     cout << " X";
                 }
             }
-            else 
-            {
-                cout << "  ";
-            }
+            else cout << "  ";
+            
         }
         cout << endl;
     }
@@ -307,29 +305,31 @@ int shot(int map[N][N], int mask[N][N], int ships[Num_Ships+1], int x, int y) {
 int main() {
     setlocale(LC_ALL, "Russian");
 
-    while (true)
-    {
-        int map[N][N] = { 0 };
-        int map2[N][N] = { 0 };
+    int map[N][N] = { 0 }; // поле человека
+        int map2[N][N] = { 0 }; // поле бота
 
-        int mask[N][N] = { 0 };
-        int mask2[N][N] = { 0 };
+        int mask[N][N] = { 0 };// туман войны человека
+        int mask2[N][N] = { 0 }; // туман войны бота
 
-        int ships[Num_Ships+1] = { 0 };
-        int ships2[Num_Ships+1] = { 0 };
+        int ships[Num_Ships+1] = { 0 }; // коробли человека
+        int ships2[Num_Ships+1] = { 0 }; // коробли бота
 
-        int x = 0, y = 0;
-        int dir = 0;
-        int size_ship = 4;
-        int ch;
-        int amount_ship = 0;//количество кораблей на поле
+        int x = 0, y = 0; // кординаты цели
+        int dir = 0; // направление
+        int size_ship = 4; // размер коробля
+        int ch = 0; // какая нажата клавиша
+        int amount_ship = 0;// количество кораблей на поле
 
-        int resultshot = 0;
+        int resultshot = 0; // попадание в корабль
 
-        string gemer = "Поле Игрока";
+        string gemer = "Поле Человека";
         string gemer2 = "Поле Бота";
 
-        for (int i = 1; i <= Num_Ships; i++) {
+        bool bot = 0; // выйграл ли бот
+        bool human = 0; // выйграл ли человек
+        // заполнение массива с короблями человека
+        for (int i = 1; i <= Num_Ships; i++) 
+        { 
             switch (size_ship) {
             case 4:
                 if (amount_ship == 0)
@@ -375,12 +375,12 @@ int main() {
                 }
                 break;
             }
-        }
-
+        } 
         amount_ship = 0;
         size_ship = 4;
-
-        for (int i = 1; i <= Num_Ships; i++) {
+        // заполнение массива с короблями бота
+        for (int i = 1; i <= Num_Ships; i++) 
+        {
             switch (size_ship) {
             case 4:
                 if (amount_ship == 0)
@@ -427,10 +427,12 @@ int main() {
                 break;
             }
         }
-
-        for(int i = 1; i <= Num_Ships; i++) // корабли человека
+        // расстановка кораблей человека рандомно
+        for(int i = 1; i <= Num_Ships; i++) 
+        {
             set_rand_ships(map, ships[i], i);
-
+        }
+        // расстановка кораблей человека вручную
         /*while (size_ship != 0) // ручная постановка корабля
         {
         int temp_x = x, temp_y = y;
@@ -508,26 +510,49 @@ int main() {
             system("cls");
         }*/
 
-        for(int i = 1; i <= Num_Ships; i++) // корабли бота
+        // расстановка кораблей бота рандомно
+        for(int i = 1; i <= Num_Ships; i++) 
+        {
             set_rand_ships(map2, ships2[i], i);
+        }
 
-
-        
-        
         bool turn = 1; // 1 ходит человек
-
-        while (true){
+        
+        while (bot == false && human == false){
+            // отвечает за стрельбу пока не будет промах
             do
-             { // отвечает за стрельбу пока не будет промах
+             { 
                 map_show(map, mask, gemer, 0);
                 map_show(map2, mask2, gemer2, 1);
-                
-
+                int semmbot = 0; // остались ли у бота корабли
+                int semm = 0; // остались ли у человека корабли
                 if (turn == 1)
                 {
                     cout << endl << "Введите кординаты цели" << endl;
                     cin >> x >> y;
                     resultshot = shot(map2, mask2, ships2, x, y);
+                    if (resultshot == 2)
+                    {
+                        cout << "Убил" << endl;
+                        for (int i = 1; i <= Num_Ships; i++)
+                        {
+                            semm += ships2[i];
+                        }
+                        if (semm == 0)
+                        {
+                            human = 1;
+                            break;
+                        }
+                        
+                    }
+                    else if (resultshot == 1)
+                    {
+                        cout << "Попал" << endl;
+                    }
+                    else
+                    {
+                        cout << "Промах";
+                    }
                 }
                 else
                 {
@@ -535,27 +560,45 @@ int main() {
                     x = rand() % N;
                     y = rand() % N;
                     resultshot = shot(map, mask, ships, x, y);
-                    Sleep(1000);
-                }
-                if (resultshot == 2)
-                {
-                    cout << "Убил" << endl;
-                }
-                else if (resultshot == 1)
-                {
-                    cout << "Попал" << endl;
-                }
-                else
-                {
-                    cout << "Промах";
+                
+                    if (resultshot == 2)
+                    {
+                        cout << "Убил" << endl;
+                        for (int i = 1; i <= Num_Ships; i++)
+                        {
+                            semmbot += ships[i];
+                        }
+                        if (semmbot == 0)
+                        {
+                            bot = 1;
+                            break;
+                        }
+                    }
+                    else if (resultshot == 1)
+                    {
+                        cout << "Попал" << endl;
+                    }
+                    else
+                    {
+                        cout << "Промах";
+                    }
                 }
                 Sleep(1000);
                 system("cls");
             }while (resultshot != 0);
             turn = !turn;
         }
-        system("cls");//отчистка консольного окошка
-    }
+        map_show(map, mask, gemer, 0);
+        map_show(map2, mask2, gemer2, 1);
+        if (human)
+        {
+            cout << "Вы победили" << endl;
+        }
+        else
+        {
+            cout << "Вы проиграли" << endl;
+        }
+    
     system("pause");
     return 0;
 }
