@@ -26,20 +26,41 @@ void ship_show(int x, int y, int dir, int size_ship) {
 
         gotox(x + 2, y + 2);
         cout << "#";
-
-        switch (dir) {
-        case 0:
-            x++;
-            break;
-        case 1:
-            y++;
-            break;
-        case 2:
-            x--;
-            break;
-        case 3:
-            y--;
-            break;
+        if (dir == 0){
+            switch (dir) {
+            case 0:
+                x++;
+                x++;
+                break;
+            case 1:
+                y++;
+                y++;
+                break;
+            case 2:
+                x--;
+                x--;
+                break;
+            case 3:
+                y--;
+                y--;
+                break;
+            }
+        }
+        else {
+            switch (dir) {
+            case 0:
+                x++;
+                break;
+            case 1:
+                y++;
+                break;
+            case 2:
+                x--;
+                break;
+            case 3:
+                y--;
+                break;
+            }
         }
     }
 }
@@ -450,20 +471,26 @@ int main() {
         switch (ch) {
         case 100:// d вправо
             x++;
+            x++;
             break;
         case 115:// s вниз
+            y++;
             y++;
             break;
         case 97:// a влево
             x--;
+            x--;
             break;
         case 119:// w вверх
+            y--;
             y--;
             break;
         case 114:// r поворот
             dir = !dir;
             break;
         case 13:// enter установка коробля
+            if (x % 2 == 0) x /= 2;
+            else x /= 2;
             if (set_ship(map, x, y, dir, size_ship)) {
                 x = 0;
                 y = 0;
