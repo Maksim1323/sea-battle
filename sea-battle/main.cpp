@@ -34,14 +34,12 @@ void ship_show(int x, int y, int dir, int size_ship) {
                 break;
             case 1:
                 y++;
-                y++;
                 break;
             case 2:
                 x--;
                 x--;
                 break;
             case 3:
-                y--;
                 y--;
                 break;
             }
@@ -66,12 +64,10 @@ void ship_show(int x, int y, int dir, int size_ship) {
 }
 //находится ли корабль в пределах карты
 bool ship_in_map(int x, int y, int dir, int size_ship) {
-    bool setting_is_possible = 0;
     bool in_map = 1;// пройдина ли проверка
-    //проверка возможности постановки коробля
     for (int i = 0; i < size_ship; i++) {
         if (x < 0 || y < 0 || x >= N || y >= N) {
-            setting_is_possible = 0;
+            in_map = 0;
             break;
         }
         switch (dir) {
@@ -346,6 +342,10 @@ int main() {
     int semmbot = 0; // остались ли у бота корабли
     int semm = 0; // остались ли у человека корабли
 
+    int temp_x = x;
+    int temp_y = y;
+    int temp_dir = dir;
+
     string gemer = "Поле Человека";
     string gemer2 = "Поле Бота";
 
@@ -462,8 +462,6 @@ int main() {
     // расстановка кораблей человека вручную
     size_ship = 4;
     while (size_ship != 0) {
-        int temp_x = x, temp_y = y;
-        int temp_dir = dir;
         map_show(map, mask, gemer, 0);
         ship_show(x, y, dir, size_ship);
         ch = _getch();
@@ -475,14 +473,12 @@ int main() {
             break;
         case 115:// s вниз
             y++;
-            y++;
             break;
         case 97:// a влево
             x--;
             x--;
             break;
         case 119:// w вверх
-            y--;
             y--;
             break;
         case 114:// r поворот
@@ -532,12 +528,11 @@ int main() {
             }
             break;
         }
-        if (!ship_in_map(x, y, dir, size_ship)) {
+        if (!ship_in_map(x/2, y, dir, size_ship)) {
             x = temp_x;
             y = temp_y;
             dir = temp_dir;
         }
-        _getch();
         system("cls");
     }
     // расстановка кораблей бота рандомно
@@ -583,12 +578,13 @@ int main() {
             else
             {
                 cout << endl << "Ход компьютера" << endl;
-                x = rand() % N;
-                y = rand() % N;
+                do {
+                    x = rand() % N;
+                    y = rand() % N;
+                } while (map[x][y] < 0);
                 resultshot = shot(map, mask, ships, x, y);
 
-                if (resultshot == 2)
-                {
+                if (resultshot == 2){
                     cout << "Убил" << endl;
                     for (int i = 1; i <= Num_Ships; i++)
                     {
