@@ -36,3 +36,5 @@
 /.vs
 /sea-battle/x64/Debug
 /x64/Debug
+/sea-battle/Release
+/Release
