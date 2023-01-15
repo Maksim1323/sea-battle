@@ -169,7 +169,7 @@ bool set_ship(short map[N][N], short x, short y, short dir, short size_ship) {
 	if (setting_is_possible == 1) {
 		x = temp_x;
 		y = temp_y;
-		for (int i = 0; i < size_ship-1; i++) {//запись коробля в массив
+		for (int i = 0; i < size_ship; i++) {//запись коробля в массив
 			map[x][y] = Ships_id;
 			switch (dir) {
 			case 0:
