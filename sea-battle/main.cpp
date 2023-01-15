@@ -169,7 +169,7 @@ bool set_ship(short map[N][N], short x, short y, short dir, short size_ship) {
 	if (setting_is_possible == 1) {
 		x = temp_x;
 		y = temp_y;
-		for (int i = 0; i < size_ship; i++) {//запись коробля в массив
+		for (int i = 0; i < size_ship-1; i++) {//запись коробля в массив
 			map[x][y] = Ships_id;
 			switch (dir) {
 			case 0:
@@ -313,7 +313,7 @@ void map_show(short map[N][N], short mask[N][N], string gemer, bool usemask) {
 	for (short i = 0; i < N; i++) {//прорисовка
 		cout << i << "";
 		for (short j = 0; j < N; j++) {
-			if (mask[j][i] == 1 || usemask == 0) {
+			//if (mask[j][i] == 1 || usemask == 0) {
 				if (map[j][i] == 0)
 				{
 					cout << " -";
@@ -330,8 +330,8 @@ void map_show(short map[N][N], short mask[N][N], string gemer, bool usemask) {
 				{
 					cout << " X";
 				}
-			}
-			else cout << "  ";
+			//}
+			//else cout << "  ";
 
 		}
 		cout << endl;
@@ -339,7 +339,7 @@ void map_show(short map[N][N], short mask[N][N], string gemer, bool usemask) {
 	cout << endl;
 }
 // выстрел
-int shot(short map[N][N], short mask[N][N], short ships[Num_Ships + 1], short x, short y) {
+short shot(short map[N][N], short mask[N][N], short ships[Num_Ships + 1], short x, short y) {
 	short result = 0; // куда побали убит ранен или промах
 	if (map[x][y] >= 1)
 	{
@@ -361,7 +361,7 @@ int shot(short map[N][N], short mask[N][N], short ships[Num_Ships + 1], short x,
 	return result;
 }
 
-short main() {
+int main() {
 	setlocale(LC_ALL, "Russian");
 
 	short map[N][N] = { 0 }; // поле человека
@@ -500,13 +500,13 @@ short main() {
 		}
 	}
 	// расстановка кораблей человека рандомно
-	/*for (short i = 1; i <= Num_Ships; i++)
+	for (short i = 1; i <= Num_Ships; i++)
 	{
 		set_rand_ships(map, ships[i], i);
-	}*/
+	}
 	// расстановка кораблей человека вручную
 	size_ship = 4;
-	while (size_ship != 0) {
+	/*while (size_ship != 0) {
 		map_show(map, mask, gemer, 0);
 		ship_show(x, y, dir, size_ship);
 		ch = _getch();
@@ -536,8 +536,9 @@ short main() {
 				dir = 0;
 				switch (size_ship) {
 				case 4:
-					if (amount_ship == 0)
-						amount_ship = 1;
+					amount_ship = amount_ship == 0 ? 1 : 0;
+					//if (amount_ship == 0)
+						//amount_ship = 1;
 					if (amount_ship > 0)
 						amount_ship--;
 					if (amount_ship == 0)
@@ -577,14 +578,14 @@ short main() {
 			dir = temp_dir;
 		}
 		system("cls");
-	}
+	}*/
 	// расстановка кораблей бота рандомно
 	for (short i = 1; i <= Num_Ships; i++)
 	{
 		set_rand_ships(map2, ships2[i], i);
 	}
+	// отвечает за стрельбу пока не будет промах
 	while (winbot == false && winhuman == false) {
-		// отвечает за стрельбу пока не будет промах
 		do
 		{
 			map_show(map, mask, gemer, 0);
@@ -598,6 +599,7 @@ short main() {
 				if (resultshot == 2)
 				{
 					cout << "Убил" << endl;
+					Sleep(1000);
 					for (int i = 1; i <= Num_Ships; i++)
 					{
 						if (ships2[i] != 0) {
@@ -615,15 +617,18 @@ short main() {
 				else if (resultshot == 1)
 				{
 					cout << "Попал" << endl;
+					Sleep(1000);
 				}
 				else
 				{
 					cout << "Промах";
+					Sleep(1000);
 				}
 			}
 			else
 			{
 				cout << endl << "Ход компьютера" << endl;
+				Sleep(1000);
 				do {
 					x = rand() % N;
 					y = rand() % N;
@@ -643,20 +648,23 @@ short main() {
 						break;
 					}
 					cout << "Убил" << endl;
+					Sleep(1000);
 				}
 				else if (resultshot == 1)
 				{
 					cout << "Попал" << endl;
+					Sleep(1000);
 				}
 				else
 				{
 					cout << "Промах";
+					Sleep(1000);
 				}
 			}
 			Sleep(1000);
 			system("cls");
 		} while (resultshot != 0);
-		turn = !turn;
+		turn = turn == 0 ? 1 : 0;
 	}
 	map_show(map, mask, gemer, 0);
 	map_show(map2, mask2, gemer2, 1);
