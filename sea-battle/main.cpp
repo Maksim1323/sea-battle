@@ -647,7 +647,6 @@ int main() {
 					}
 					if (bot == 1) {
 						winbot = 1;
-						break;
 					}
 					cout << "Убил" << endl;
 					Sleep(1000);
