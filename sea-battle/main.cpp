@@ -313,7 +313,7 @@ void map_show(short map[N][N], short mask[N][N], string gemer, bool usemask) {
 	for (short i = 0; i < N; i++) {//прорисовка
 		cout << i << "";
 		for (short j = 0; j < N; j++) {
-			//if (mask[j][i] == 1 || usemask == 0) {
+			if (mask[j][i] == 1 || usemask == 0) {
 				if (map[j][i] == 0)
 				{
 					cout << " -";
@@ -330,8 +330,8 @@ void map_show(short map[N][N], short mask[N][N], string gemer, bool usemask) {
 				{
 					cout << " X";
 				}
-			//}
-			//else cout << "  ";
+			}
+			else cout << "  ";
 
 		}
 		cout << endl;
@@ -593,13 +593,14 @@ int main() {
 			
 			if (turn == 1)
 			{
-				cout << endl << "Введите кординаты цели" << endl;
+				cout << "Введите кординаты цели: ";
 				cin >> x >> y;
 				resultshot = shot(map2, mask2, ships2, x, y);
 				if (resultshot == 2)
 				{
 					cout << "Убил" << endl;
 					Sleep(1000);
+					system("cls");
 					for (int i = 1; i <= Num_Ships; i++)
 					{
 						if (ships2[i] != 0) {
@@ -608,30 +609,31 @@ int main() {
 						}
 					}
 					if (human == 1) {
-							winhuman = 1;
-							break;
-						}
+						winhuman = 1;
+					}
 					human = semmhuman <= 0 ? 1 : 0;
-					break;
 				}
 				else if (resultshot == 1)
 				{
 					cout << "Попал" << endl;
 					Sleep(1000);
+					system("cls");
 				}
 				else
 				{
 					cout << "Промах";
 					Sleep(1000);
+					system("cls");
 				}
 			}
 			else
 			{
-				cout << endl << "Ход компьютера" << endl;
+				cout << "Ход компьютера: ";
 				Sleep(1000);
 				do {
 					x = rand() % N;
 					y = rand() % N;
+					cout << x << " " << y << endl;
 				} while (map[x][y] < 0);
 				resultshot = shot(map, mask, ships, x, y);
 
@@ -661,7 +663,6 @@ int main() {
 					Sleep(1000);
 				}
 			}
-			Sleep(1000);
 			system("cls");
 		} while (resultshot != 0);
 		turn = turn == 0 ? 1 : 0;
