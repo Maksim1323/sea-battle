@@ -174,9 +174,11 @@ bool set_ship(short map[N][N], short x, short y, short dir, short size_ship) {
 			switch (dir) {
 			case 0:
 				x++;
+				
 				break;
 			case 1:
 				y++;
+				
 				break;
 			case 2:
 				x--;
@@ -185,6 +187,8 @@ bool set_ship(short map[N][N], short x, short y, short dir, short size_ship) {
 				y--;
 				break;
 			}
+			x = x > 9 ? 9 : x;
+			y = y > 9 ? 9 : y;
 		}
 		Ships[Ships_id] = size_ship;
 		Ships_id += 1;
@@ -288,9 +292,11 @@ void set_rand_ships(short map[N][N], short size_ship, short ship_id) {
 				switch (dir) {
 				case 0:
 					x++;
+					
 					break;
 				case 1:
 					y++;
+					
 					break;
 				case 2:
 					x--;
@@ -299,6 +305,9 @@ void set_rand_ships(short map[N][N], short size_ship, short ship_id) {
 					y--;
 					break;
 				}
+				//защита от переполнения
+				x = x > 9 ? 9 : x; 
+				y = y > 9 ? 9 : y;
 			}
 			cout_ship += 1;
 		}
@@ -396,8 +405,8 @@ int main() {
 	bool bot = 1; // выйграл ли бот
 	bool human = 1; // выйграл ли человек
 
-	bool winbot = 0; // выйграл ли бот
-	bool winhuman = 0; // выйграл ли человек
+	bool winbot = 0; // остались ли бота корабли
+	bool winhuman = 0; // остались ли человека корабли
 
 	// заполнение массива с короблями человека
 	for (short i = 1; i <= Num_Ships; i++)
@@ -505,8 +514,8 @@ int main() {
 		set_rand_ships(map, ships[i], i);
 	}
 	// расстановка кораблей человека вручную
-	size_ship = 4;
-	/*while (size_ship != 0) {
+	/*size_ship = 4;
+	while (size_ship != 0) {
 		map_show(map, mask, gemer, 0);
 		ship_show(x, y, dir, size_ship);
 		ch = _getch();
@@ -593,8 +602,14 @@ int main() {
 			
 			if (turn == 1)
 			{
-				cout << "Введите кординаты цели: ";
-				cin >> x >> y;
+				do {
+					cout << "Введите кординаты цели: ";
+					cin >> x >> y; 
+					system("cls");
+					map_show(map, mask, gemer, 0);
+					map_show(map2, mask2, gemer2, 1);
+				} while (x > 9 || y > 9 || x < 0 || y < 0);
+
 				resultshot = shot(map2, mask2, ships2, x, y);
 				if (resultshot == 2)
 				{
