@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <windows.h>
 #include <ctime>
 #include <conio.h>
@@ -397,8 +397,8 @@ int main() {
 	short temp_y = y;
 	short temp_dir = dir;
 
-	string gemer = "Поле Человека";
-	string gemer2 = "Поле Бота";
+	string gemer = "Поле Игрока";
+	string gemer2 = "Поле Компьютера";
 
 	bool turn = 1; // 1 ходит человек
 
@@ -508,13 +508,8 @@ int main() {
 			break;
 		}
 	}
-	// расстановка кораблей человека рандомно
-	for (short i = 1; i <= Num_Ships; i++)
-	{
-		set_rand_ships(map, ships[i], i);
-	}
 	// расстановка кораблей человека вручную
-	/*size_ship = 4;
+	size_ship = 4;
 	while (size_ship != 0) {
 		map_show(map, mask, gemer, 0);
 		ship_show(x, y, dir, size_ship);
@@ -546,8 +541,8 @@ int main() {
 				switch (size_ship) {
 				case 4:
 					amount_ship = amount_ship == 0 ? 1 : 0;
-					//if (amount_ship == 0)
-						//amount_ship = 1;
+					if (amount_ship == 0)
+						amount_ship = 1;
 					if (amount_ship > 0)
 						amount_ship--;
 					if (amount_ship == 0)
@@ -587,7 +582,7 @@ int main() {
 			dir = temp_dir;
 		}
 		system("cls");
-	}*/
+	}
 	// расстановка кораблей бота рандомно
 	for (short i = 1; i <= Num_Ships; i++)
 	{
